@@ -43,7 +43,10 @@ int main(){
 			case 3: //Gestionar Reservas
 				menuReservas();
 				break;
-			case 4: //Salir
+			case 4: //Gestionar Bar
+				menuBar();
+				break;
+			case 5: //Salir
 				resp = 0;
 				cout << "Saliendo del programa ... " << endl;
 				break;
@@ -61,7 +64,8 @@ int menuPrincipal(){
 		cout << " 1: Gestionar Habitaciones" << endl;
 		cout << " 2: Gestionar Clientes" << endl;
 		cout << " 3: Gestionar Reservas" << endl;
-		cout << " 4: Salir del programa" << endl;
+		cout << " 4: Gestionar Bar" << endl;
+		cout << " 5: Salir del programa" << endl;
 		cout << "Elija la opcion"<<endl;
 		cin >> op;
 	} while (op < 1 || op > 4);
