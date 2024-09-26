@@ -34,15 +34,15 @@ struct Factura{
 	
 };
 int menuHabitacion();
-void opcionesHabitacion();
+void opcionesHabitacion(int op);
 int menuCliente();
-void opcionesCliente();
+void opcionesCliente(int op);
 int menuPrincipal();
 void opcionesPrincipal(int op);
 int menuReservas();
-void opcionesReservas();
+void opcionesReservas(int op);
 int menuBar();
-void opcionesBar();
+void opcionesBar(int op);
 
 int main(){
 	setlocale(LC_CTYPE, "Spanish");
@@ -52,8 +52,6 @@ int main(){
 		op = menuPrincipal();
 		opcionesPrincipal(op);
 		
-		cout << "Presiona una tecla para continuar: ";
-		getch();
 	} while (op < 1 || op > 5);
 	getch();
 	return 0;
@@ -167,16 +165,20 @@ void opcionesCliente(int op){
 void opcionesPrincipal(int op){
 	switch(op){
 			case 1: //gestionar Habitaciones
-				menuHabitacion();
+				op=menuHabitacion();
+				opcionesHabitacion(op);
 				break;
 			case 2: //Gestionar Clientes
-				menuCliente();
+				op=menuCliente();
+				opcionesCliente(op);
 				break;
 			case 3: //Gestionar Reservas
-				menuReservas();
+				op=menuReservas();
+				opcionesReservas(op);
 				break;
 			case 4: //Gestionar Bar
-				menuBar();
+				op=menuBar();
+				opcionesBar(op);
 				break;
 			case 5: //Salir
 				cout << "Saliendo del programa ... " << endl;
