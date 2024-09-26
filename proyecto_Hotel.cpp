@@ -21,6 +21,9 @@ struct Cliente{
 struct Reserva{
 	
 };
+struct Factura{
+
+}
 int menuHabitacion();
 void opcionesHabitacion();
 int menuCliente();
