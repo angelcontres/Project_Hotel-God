@@ -46,57 +46,65 @@ void opcionesBar(int op);
 
 int main(){
 	setlocale(LC_CTYPE, "Spanish");
-	int op, resp=1;
-	do{
+	int op;
+	do {
 		system("cls");
 		op = menuPrincipal();
 		opcionesPrincipal(op);
-		
-	} while (op < 1 || op > 5);
+	} while (op != 5); // Repite hasta que se elija salir (opción 5)
+	
 	getch();
 	return 0;
 }
 int menuPrincipal(){
 	int op;
 
-		cout << "***** MENU PRINCIPAL *****" << endl;
-		cout << " 1: Gestionar Habitaciones" << endl;
-		cout << " 2: Gestionar Clientes" << endl;
-		cout << " 3: Gestionar Reservas" << endl;
-		cout << " 4: Gestionar Bar" << endl;
-		cout << " 5: Salir del programa" << endl;
-		cout << "Elija la opcion"<<endl;
+	cout << "***** MENU PRINCIPAL *****" << endl;
+	cout << " 1: Gestionar Habitaciones" << endl;
+	cout << " 2: Gestionar Clientes" << endl;
+	cout << " 3: Gestionar Reservas" << endl;
+	cout << " 4: Gestionar Bar" << endl;
+	cout << " 5: Salir del programa" << endl;
+	cout << "Elija la opcion: ";
+	cin >> op;
+
+	while (op < 1 || op > 5) { // Verificación de opción válida
+		cout << "Opción inválida. Intente de nuevo: ";
 		cin >> op;
+	}
 
 	return op;
 }
+
 int menuCliente(){
 	int op;
-	do{
+	do {
 		cout << "***** MENU CLIENTES *****" << endl;
 		cout << " 1: Insertar Cliente" << endl;
-		cout << " 2: Modificar un cliente"<<endl;
-		cout << " 3: Eliminar un cliente"<<endl;
-		cout << " 4: Listar clientes"<<endl;
-		cout << " 5: Volver al menú principal"<<endl;
-		cout << " Elija la opcion "<<endl;
+		cout << " 2: Modificar un cliente" << endl;
+		cout << " 3: Eliminar un cliente" << endl;
+		cout << " 4: Listar clientes" << endl;
+		cout << " 5: Volver al menú principal" << endl;
+		cout << "Elija la opción: ";
 		cin >> op;
-	} while (op < 1 || op > 5);
+	} while (op < 1 || op > 5); // Verificación de opción válida
 	return op;
 }
+
 int menuReservas(){
 	int op;
-	do{
+	do {
 		cout << "***** MENU DE RESERVAS *****" << endl;
 		cout << " 1: Reservar" << endl;
 		cout << " 2: Buscar reserva" << endl;
 		cout << " 3: Finalizar reserva y entregar factura" << endl;
 		cout << " 4: Volver al menú principal" << endl;
-		cout << "Elija la opcion: "<<endl;
+		cout << "Elija la opción: ";
 		cin >> op;
-	} while (op < 1 || op > 5);
+	} while (op < 1 || op > 4); // Verificación de opción válida
 	return op;
 }
+
 int menuHabitacion(){
 	int op;
 	do {
@@ -106,111 +114,112 @@ int menuHabitacion(){
 		cout << " 3: Eliminar habitación" << endl;
 		cout << " 4: Listar habitaciones" << endl;
 		cout << " 5: Volver al menú principal" << endl;
-		cout << "Elija la opcion: "<<endl;
+		cout << "Elija la opción: ";
 		cin >> op;
-	} while (op < 1 || op > 5);
+	} while (op < 1 || op > 5); // Verificación de opción válida
 	return op;
 }
+
 int menuBar(){
 	int op;
 	do {
 		cout << "***** MENU DE BAR *****" << endl;
 		cout << " 1: Ingresar el valor de consumo a cliente" << endl;
 		cout << " 2: Volver al menú principal" << endl;
-		cout << "Elija la opcion: "<<endl;
+		cout << "Elija la opción: ";
 		cin >> op;
-	} while (op < 1 || op > 2);
+	} while (op < 1 || op > 2); // Verificación de opción válida
 	return op;
 }
-void opcionesHabitacion(int op){
 
+void opcionesHabitacion(int op){
 	switch(op){
-			case 1: 
-				//Insertar habitación
-				break;
-			case 2: 
-				//Modificar habitación
-				break;
-			case 3: 
-				//Eliminar habitación
-				break;
-			case 4: 
-				//Listar habitaciones
-				break;
-			case 5: //Salir
-				cout << "Saliendo del programa ... " << endl;
-				break;
-		}
+		case 1: 
+			// Insertar habitación
+			break;
+		case 2: 
+			// Modificar habitación
+			break;
+		case 3: 
+			// Eliminar habitación
+			break;
+		case 4: 
+			// Listar habitaciones
+			break;
+		case 5: 
+			// Volver al menú principal
+			break;
+	}
 }
+
 void opcionesCliente(int op){
-	
 	switch(op){
-			case 1: //Insertar Cliente
-				
-				break;
-			case 2: //Modificar un cliente
-				
-				break;
-			case 3: //Eliminar un cliente
-				
-				break;
-			case 4: //Listar clientes
-				
-				break;
-			case 5: //Salir
-				cout << "Saliendo del programa ... " << endl;
-				break;
-		}
+		case 1: 
+			// Insertar Cliente
+			break;
+		case 2: 
+			// Modificar un cliente
+			break;
+		case 3: 
+			// Eliminar un cliente
+			break;
+		case 4: 
+			// Listar clientes
+			break;
+		case 5: 
+			// Volver al menú principal
+			break;
+	}
 }
+
 void opcionesPrincipal(int op){
 	switch(op){
-			case 1: //gestionar Habitaciones
-				op=menuHabitacion();
-				opcionesHabitacion(op);
-				break;
-			case 2: //Gestionar Clientes
-				op=menuCliente();
-				opcionesCliente(op);
-				break;
-			case 3: //Gestionar Reservas
-				op=menuReservas();
-				opcionesReservas(op);
-				break;
-			case 4: //Gestionar Bar
-				op=menuBar();
-				opcionesBar(op);
-				break;
-			case 5: //Salir
-				cout << "Saliendo del programa ... " << endl;
-				break;
-		}
+		case 1: 
+			op = menuHabitacion();
+			opcionesHabitacion(op);
+			break;
+		case 2: 
+			op = menuCliente();
+			opcionesCliente(op);
+			break;
+		case 3: 
+			op = menuReservas();
+			opcionesReservas(op);
+			break;
+		case 4: 
+			op = menuBar();
+			opcionesBar(op);
+			break;
+		case 5: 
+			cout << "Saliendo del programa..." << endl;
+			break;
+	}
 }
+
 void opcionesReservas(int op){
-	
 	switch(op){
-			case 1: //Reservar
-				
-				break;
-			case 2: //Buscar reserva
-				
-				break;
-			case 3: //finalizar reserva y entregar factura
-				
-				break;
-		
-			case 4: //Salir
-				cout << "Saliendo del programa ... " << endl;
-				break;
-		}
+		case 1: 
+			// Reservar
+			break;
+		case 2: 
+			// Buscar reserva
+			break;
+		case 3: 
+			// Finalizar reserva y entregar factura
+			break;
+		case 4: 
+			// Volver al menú principal
+			break;
+	}
 }
+
 void opcionesBar(int op){
 	switch(op){
-			case 1: //gestionar Habitaciones
-				
-				break;
-		
-			case 2: //Salir
-				cout << "Saliendo del programa ... " << endl;
-				break;
-		}
+		case 1: 
+			// Ingresar consumo a cliente
+			break;
+		case 2: 
+			// Volver al menú principal
+			break;
+	}
 }
