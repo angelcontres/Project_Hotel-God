@@ -6,7 +6,11 @@
 using namespace std;
 
 struct Habitacion{
-	
+	int numHabitacion;
+	int tipoHabitacion;
+	float precioBase;
+	int vistaAlMar;
+	int numCamas;
 };
 struct Cliente{
 	string nombres;
@@ -27,19 +31,18 @@ int main(){
 	int op, resp=1;
 	do{
 		system("cls");
-		op=menuPrincipal();
+		op = menuPrincipal();
 		switch(op){
-			case 1:
-				//gestionar Habitaciones
+			case 1: //gestionar Habitaciones
+				menuHabitacion();
 				break;
-			case 2:
-				//Gestionar Clientes
+			case 2: //Gestionar Clientes
+				menuCliente();
 				break;
-			case 3:
-				//Gestionar Reservas
+			case 3: //Gestionar Reservas
+				menuReservas();
 				break;
-			case 4:
-				//Salir
+			case 4: //Salir
 				resp = 0;
 				cout << "Saliendo del programa ... " << endl;
 				break;
@@ -82,11 +85,11 @@ int menuReservas(){
 	int op;
 	do{
 		cout << "***** MENU DE RESERVAS *****" << endl;
-		cout << " 1: " << endl;
-		cout << " 2: " << endl;
-		cout << " 3: " << endl;
-		cout << " 4: " << endl;
-		cout << " 5: " << endl;
+		cout << " 1: Reservar" << endl;
+		cout << " 2: Modificar Reserva" << endl;
+		cout << " 3: Eliminar Reserva" << endl;
+		cout << " 4: Listar Reservas" << endl;
+		cout << " 5: SALIR" << endl;
 		cout << "Elija la opcion: ";
 		cin >> op;
 	} while (op < 1 || op > 5);
@@ -95,4 +98,14 @@ int menuReservas(){
 int menuHabitacion(){
 	int op;
 	return op;
+	do {
+		cout << "***** MENU DE HABITACIONES *****" << endl;
+		cout << " 1: Insertar habitación" << endl;
+		cout << " 2: Modificar habitación" << endl;
+		cout << " 3: Eliminar habitación" << endl;
+		cout << " 4: Listar habitaciones" << endl;
+		cout << " 5: SALIR" << endl;
+		cout << "Elija la opcion: ";
+		cin >> op;
+	}
 }
