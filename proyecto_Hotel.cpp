@@ -67,11 +67,11 @@ int menuCliente(){
 	int op;
 	do{
 		cout << "***** MENU CLIENTES *****" << endl;
-		cout << " 1: insertar Cliente" << endl;
-		cout << " 2: ";
-		cout << " 3: ";
-		cout << " 4: ";
-		cout << " 5: ";
+		cout << " 1: Insertar Cliente" << endl;
+		cout << " 2: Modificar un cliente";
+		cout << " 3: Eliminar un cliente";
+		cout << " 4: Listar clientes";
+		cout << " 5: SALIR";
 		cout << " Elija la opcion ";
 		
 		cin >> op;
