@@ -25,6 +25,7 @@ int menuHabitacion();
 int menuCliente();
 int menuPrincipal();
 int menuReservas();
+int menuBar();
 
 int main(){
 	setlocale(LC_CTYPE, "Spanish");
@@ -60,8 +61,8 @@ int menuPrincipal(){
 		cout << " 1: Gestionar Habitaciones" << endl;
 		cout << " 2: Gestionar Clientes" << endl;
 		cout << " 3: Gestionar Reservas" << endl;
-		cout << " 4: Sair " << endl;
-		cout << "Elija la opcion";
+		cout << " 4: Salir del programa" << endl;
+		cout << "Elija la opcion"<<endl;
 		cin >> op;
 	} while (op < 1 || op > 4);
 	return op;
@@ -71,12 +72,11 @@ int menuCliente(){
 	do{
 		cout << "***** MENU CLIENTES *****" << endl;
 		cout << " 1: Insertar Cliente" << endl;
-		cout << " 2: Modificar un cliente";
-		cout << " 3: Eliminar un cliente";
-		cout << " 4: Listar clientes";
-		cout << " 5: SALIR";
-		cout << " Elija la opcion ";
-		
+		cout << " 2: Modificar un cliente"<<endl;
+		cout << " 3: Eliminar un cliente"<<endl;
+		cout << " 4: Listar clientes"<<endl;
+		cout << " 5: Volver al menú principal"<<endl;
+		cout << " Elija la opcion "<<endl;
 		cin >> op;
 	} while (op < 1 || op > 5);
 	return op;
@@ -89,24 +89,35 @@ int menuReservas(){
 		cout << " 2: Modificar Reserva" << endl;
 		cout << " 3: Eliminar Reserva" << endl;
 		cout << " 4: Listar Reservas" << endl;
-		cout << " 5: SALIR" << endl;
-		cout << "Elija la opcion: ";
+		cout << " 5: Volver al menú principal" << endl;
+		cout << "Elija la opcion: "<<endl;
 		cin >> op;
 	} while (op < 1 || op > 5);
 	return op;
 }
 int menuHabitacion(){
 	int op;
-	return op;
 	do {
 		cout << "***** MENU DE HABITACIONES *****" << endl;
 		cout << " 1: Insertar habitación" << endl;
 		cout << " 2: Modificar habitación" << endl;
 		cout << " 3: Eliminar habitación" << endl;
 		cout << " 4: Listar habitaciones" << endl;
-		cout << " 5: SALIR" << endl;
-		cout << "Elija la opcion: ";
+		cout << " 5: Volver al menú principal" << endl;
+		cout << "Elija la opcion: "<<endl;
 		cin >> op;
 	} while (op < 1 || op > 5);
 	return op;
+}
+int menuBar(){
+	int op;
+	do {
+		cout << "***** MENU DE BAR *****" << endl;
+		cout << " 1: Ingresar el valor de consumo a cliente" << endl;
+		cout << " 2: Volver al menú principal" << endl;
+		cout << "Elija la opcion: "<<endl;
+		cin >> op;
+	} while (op < 1 || op > 2);
+	return op;
+}
 }
