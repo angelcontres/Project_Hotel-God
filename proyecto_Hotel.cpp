@@ -19,11 +19,20 @@ struct Cliente{
 	string email;
 };
 struct Reserva{
-	
+	Habitacion datosHabitacion;
+	Cliente datosClientes;
+	string fecha_in;
+	string fecha_out;
+	string temporada;
+	int n_dias;
+	float precioFinal;
 };
 struct Factura{
-
-}
+	Reserva totalDatos;
+	float gastosBar;
+	float valorTotal;
+	
+};
 int menuHabitacion();
 void opcionesHabitacion();
 int menuCliente();
@@ -115,7 +124,8 @@ int menuBar(){
 	} while (op < 1 || op > 2);
 	return op;
 }
-void opcionesHabitacion(){
+void opcionesHabitacion(int op){
+
 	switch(op){
 			case 1: 
 				//Insertar habitación
@@ -134,7 +144,8 @@ void opcionesHabitacion(){
 				break;
 		}
 }
-void opcionesCliente(){
+void opcionesCliente(int op){
+	
 	switch(op){
 			case 1: //Insertar Cliente
 				
@@ -172,7 +183,8 @@ void opcionesPrincipal(int op){
 				break;
 		}
 }
-void opcionesReservas(){
+void opcionesReservas(int op){
+	
 	switch(op){
 			case 1: //Reservar
 				
@@ -189,7 +201,7 @@ void opcionesReservas(){
 				break;
 		}
 }
-void opcionesBar(){
+void opcionesBar(int op){
 	switch(op){
 			case 1: //gestionar Habitaciones
 				
