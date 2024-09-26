@@ -107,5 +107,6 @@ int menuHabitacion(){
 		cout << " 5: SALIR" << endl;
 		cout << "Elija la opcion: ";
 		cin >> op;
-	}
+	} while (op < 1 || op > 5);
+	return op;
 }
