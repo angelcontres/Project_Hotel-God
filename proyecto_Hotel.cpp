@@ -31,7 +31,6 @@ int main(){
 	setlocale(LC_CTYPE, "Spanish");
 	int op, resp=1;
 	do{
-		system("cls");
 		op = menuPrincipal();
 		switch(op){
 			case 1: //gestionar Habitaciones
@@ -60,6 +59,7 @@ int main(){
 int menuPrincipal(){
 	int op;
 	do{
+		system("cls");
 		cout << "***** MENU PRINCIPAL *****" << endl;
 		cout << " 1: Gestionar Habitaciones" << endl;
 		cout << " 2: Gestionar Clientes" << endl;
@@ -74,6 +74,7 @@ int menuPrincipal(){
 int menuCliente(){
 	int op;
 	do{
+		system("cls");
 		cout << "***** MENU CLIENTES *****" << endl;
 		cout << " 1: Insertar Cliente" << endl;
 		cout << " 2: Modificar un cliente"<<endl;
@@ -88,6 +89,7 @@ int menuCliente(){
 int menuReservas(){
 	int op;
 	do{
+		system("cls");
 		cout << "***** MENU DE RESERVAS *****" << endl;
 		cout << " 1: Reservar" << endl;
 		cout << " 2: Modificar Reserva" << endl;
@@ -116,6 +118,7 @@ int menuHabitacion(){
 int menuBar(){
 	int op;
 	do {
+		system("cls");
 		cout << "***** MENU DE BAR *****" << endl;
 		cout << " 1: Ingresar el valor de consumo a cliente" << endl;
 		cout << " 2: Volver al menú principal" << endl;
