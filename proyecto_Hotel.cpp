@@ -79,10 +79,9 @@ int menuReservas(){
 	do{
 		cout << "***** MENU DE RESERVAS *****" << endl;
 		cout << " 1: Reservar" << endl;
-		cout << " 2: Modificar Reserva" << endl;
-		cout << " 3: Eliminar Reserva" << endl;
-		cout << " 4: Listar Reservas" << endl;
-		cout << " 5: Volver al menú principal" << endl;
+		cout << " 2: Buscar reserva" << endl;
+		cout << " 3: Finalizar reserva y entregar factura" << endl;
+		cout << " 4: Volver al menú principal" << endl;
 		cout << "Elija la opcion: "<<endl;
 		cin >> op;
 	} while (op < 1 || op > 5);
@@ -175,16 +174,14 @@ void opcionesReservas(){
 			case 1: //Reservar
 				
 				break;
-			case 2: //Modificar Reserva
+			case 2: //Buscar reserva
 				
 				break;
-			case 3: //Eliminar Reserva
+			case 3: //finalizar reserva y entregar factura
 				
 				break;
-			case 4: //Listar Reservas
-				
-				break;
-			case 5: //Salir
+		
+			case 4: //Salir
 				cout << "Saliendo del programa ... " << endl;
 				break;
 		}
