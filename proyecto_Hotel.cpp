@@ -17,6 +17,8 @@ struct Cliente{
 	string cedula;
 	string telefono;
 	string email;
+	Cliente *sgt;
+	Cliente *ant;
 };
 struct Reserva{
 	Habitacion datosHabitacion;
@@ -33,52 +35,60 @@ struct Factura{
 	float valorTotal;
 	
 };
+//Funciones de menus
 int menuHabitacion();
-void opcionesHabitacion(int op);
-int menuCliente();
-void opcionesCliente(int op);
-int menuPrincipal();
-void opcionesPrincipal(int op);
-int menuReservas();
-void opcionesReservas(int op);
 int menuBar();
+int menuCliente();
+int menuPrincipal();
+int menuReservas();
+//Funciones de operaciones
+void opcionesHabitacion(int op);
+void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC);
+void opcionesPrincipal(int op, Cliente  *&pcabC, Cliente *&pfinC);
+void opcionesReservas(int op);
 void opcionesBar(int op);
+//Funciones de Habitaciones
 
+//Funciones de Clientes
+void InsertarCliente(Cliente *&pcabC, Cliente *&pfinC);
+Cliente *BuscarCliente(Cliente *&pcabC, string cedulabuscar);
+void PresentarCliente(Cliente *dirNodoCliente);
+void ModificarCliente(Cliente *dirNodoCliente);
+void EliminarCliente(Cliente *dirNodoCliente, Cliente *&pcabC, Cliente *&pfinC);
+//Funciones de Reservas
+
+//Funciones de Bar
 int main(){
 	setlocale(LC_CTYPE, "Spanish");
 	int op;
+	Cliente *pcabC = NULL, *pfinC = NULL;
 	do {
-		system("cls");
 		op = menuPrincipal();
-		opcionesPrincipal(op);
-	} while (op != 5); // Repite hasta que se elija salir (opción 5)
+		opcionesPrincipal(op, pcabC, pfinC);
+	} while (op != 5);
 	
 	getch();
 	return 0;
 }
 int menuPrincipal(){
 	int op;
-
-	cout << "***** MENU PRINCIPAL *****" << endl;
-	cout << " 1: Gestionar Habitaciones" << endl;
-	cout << " 2: Gestionar Clientes" << endl;
-	cout << " 3: Gestionar Reservas" << endl;
-	cout << " 4: Gestionar Bar" << endl;
-	cout << " 5: Salir del programa" << endl;
-	cout << "Elija la opcion: ";
-	cin >> op;
-
-	while (op < 1 || op > 5) { // Verificación de opción válida
-		cout << "Opción inválida. Intente de nuevo: ";
+	do{
+		system("cls");
+		cout << "***** MENU PRINCIPAL *****" << endl;
+		cout << " 1: Gestionar Habitaciones" << endl;
+		cout << " 2: Gestionar Clientes" << endl;
+		cout << " 3: Gestionar Reservas" << endl;
+		cout << " 4: Gestionar Bar" << endl;
+		cout << " 5: Salir del programa" << endl;
+		cout << "Elija la opcion: ";
 		cin >> op;
-	}
-
+	} while (op < 1 || op > 5);
 	return op;
 }
-
 int menuCliente(){
 	int op;
 	do {
+		system("cls");
 		cout << "***** MENU CLIENTES *****" << endl;
 		cout << " 1: Insertar Cliente" << endl;
 		cout << " 2: Modificar un cliente" << endl;
@@ -90,10 +100,10 @@ int menuCliente(){
 	} while (op < 1 || op > 5); // Verificación de opción válida
 	return op;
 }
-
 int menuReservas(){
 	int op;
 	do {
+		system("cls");
 		cout << "***** MENU DE RESERVAS *****" << endl;
 		cout << " 1: Reservar" << endl;
 		cout << " 2: Buscar reserva" << endl;
@@ -104,10 +114,10 @@ int menuReservas(){
 	} while (op < 1 || op > 4); // Verificación de opción válida
 	return op;
 }
-
 int menuHabitacion(){
 	int op;
 	do {
+		system("cls");
 		cout << "***** MENU DE HABITACIONES *****" << endl;
 		cout << " 1: Insertar habitación" << endl;
 		cout << " 2: Modificar habitación" << endl;
@@ -119,10 +129,10 @@ int menuHabitacion(){
 	} while (op < 1 || op > 5); // Verificación de opción válida
 	return op;
 }
-
 int menuBar(){
 	int op;
 	do {
+		system("cls");
 		cout << "***** MENU DE BAR *****" << endl;
 		cout << " 1: Ingresar el valor de consumo a cliente" << endl;
 		cout << " 2: Volver al menú principal" << endl;
@@ -151,17 +161,32 @@ void opcionesHabitacion(int op){
 			break;
 	}
 }
-
-void opcionesCliente(int op){
+void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC){
+	Cliente *dirNodoCliente;
+	string cedulabuscar;
 	switch(op){
-		case 1: 
-			// Insertar Cliente
+		case 1: // Insertar Cliente
+			InsertarCliente(pcabC, pfinC);
 			break;
-		case 2: 
-			// Modificar un cliente
+		case 2: // Modificar un cliente
+			cout << "Ingrese el numero de cedula del cliente: ";
+			cin >> cedulabuscar;
+			dirNodoCliente = BuscarCliente(pcabC, cedulabuscar);
+			if (dirNodoCliente == NULL){
+				cout << "El cliente no existe :c " << endl; 
+			}else {
+				ModificarCliente(dirNodoCliente);
+			}
 			break;
-		case 3: 
-			// Eliminar un cliente
+		case 3: // Eliminar un cliente
+			cout << "Ingrese el numero de cedula del cliente: ";
+			cin >> cedulabuscar;
+			dirNodoCliente = BuscarCliente(pcabC, cedulabuscar);
+			if (dirNodoCliente == NULL){
+				cout << "El cliente no existe :c " << endl; 
+			}else {
+				EliminarCliente(dirNodoCliente, pcabC, pfinC);
+			}
 			break;
 		case 4: 
 			// Listar clientes
@@ -171,31 +196,46 @@ void opcionesCliente(int op){
 			break;
 	}
 }
-
-void opcionesPrincipal(int op){
+void opcionesPrincipal(int op, Cliente  *&pcabC, Cliente *&pfinC){
+	int resp = 1;
 	switch(op){
 		case 1: 
-			op = menuHabitacion();
-			opcionesHabitacion(op);
+			do {
+				op = menuHabitacion();
+				opcionesHabitacion(op);
+				cout << "Dese Realizar otro proceso SI(1), No(0): ";
+				cin >> resp;
+			} while (resp == 1);
 			break;
 		case 2: 
-			op = menuCliente();
-			opcionesCliente(op);
+			do{
+				op = menuCliente();
+				opcionesCliente(op, pcabC, pfinC);
+				cout << "Desea Realizar otro proceso Si(1), No(0): ";
+				cin >> resp;				
+			} while (resp == 1);
 			break;
 		case 3: 
-			op = menuReservas();
-			opcionesReservas(op);
+			do{
+				op = menuReservas();
+				opcionesReservas(op);
+				cout << "Desea realizar otro proceso Si(1), No(0): ";
+				cin >> resp;				
+			} while (resp == 1);
 			break;
 		case 4: 
-			op = menuBar();
-			opcionesBar(op);
+			do{
+				op = menuBar();
+				opcionesBar(op);
+				cout << "Desea realizar otro proceso Si(1), No(0)";
+				cin >> resp;
+			} while (resp == 1);
 			break;
 		case 5: 
 			cout << "Saliendo del programa..." << endl;
 			break;
 	}
 }
-
 void opcionesReservas(int op){
 	switch(op){
 		case 1: 
@@ -212,7 +252,6 @@ void opcionesReservas(int op){
 			break;
 	}
 }
-
 void opcionesBar(int op){
 	switch(op){
 		case 1: 
@@ -222,4 +261,95 @@ void opcionesBar(int op){
 			// Volver al menú principal
 			break;
 	}
+}
+
+void InsertarCliente(Cliente *&pcabC, Cliente *&pfinC){
+	Cliente *nodoCliente =new Cliente();
+	fflush(stdin);
+	cout << "Ingrese los nombres del cliente: ";
+	getline(cin, nodoCliente->nombres);
+	cout << "Ingrese el numero de Cedula del cliente: ";
+	cin >> nodoCliente->cedula;
+	cout << "Ingrese el email del cliente: ";
+	cin >> nodoCliente->email;
+	cout << "Ingrese el telefono del cliente: ";
+	cin >> nodoCliente->telefono;
+	nodoCliente->sgt = NULL;
+	nodoCliente->ant = pfinC;
+	
+	if(pcabC == NULL){
+		pcabC = nodoCliente;
+		pfinC = nodoCliente;
+	}else{
+		pfinC->sgt = nodoCliente->sgt;
+		nodoCliente->ant = pfinC;
+		pfinC = nodoCliente;
+	}
+}
+Cliente *BuscarCliente(Cliente *&pcabC, string cedulabuscar){
+	Cliente *actual=pcabC;
+	while(actual != NULL){
+		if(actual->cedula == cedulabuscar){
+			return actual;
+		}
+		actual = actual->sgt;
+	}
+	return NULL;
+}
+void PresentarCliente(Cliente *dirNodoCliente){
+	cout << "Nombres: " << dirNodoCliente->nombres << endl;
+	cout << "Cedula: " << dirNodoCliente->cedula << endl;
+	cout << "Email: " << dirNodoCliente->email << endl;
+	cout << "Telefono: " << dirNodoCliente->telefono << endl;
+	cout << endl;
+}
+void ModificarCliente(Cliente *dirNodoCliente){
+	int op, resp;
+	do{
+		PresentarCliente(dirNodoCliente);
+		cout << "Que campo desea modificar: " << endl;
+		cout << " 1: Nombres" << endl;
+		cout << " 2: Cedula" << endl;
+		cout << " 3: Email" << endl;
+		cout << " 4: Telefono" << endl;
+		cout << "Elija la opcion: " ;
+		cin >> op;
+		switch (op){
+			case 1:
+				fflush(stdin);
+				cout << "Ingrese los nuevos nombres: ";
+				getline(cin,dirNodoCliente->nombres);
+				break;
+			case 2:
+				cout << "Ingrese la nueva cedula: ";
+				cin >> dirNodoCliente->cedula;
+				break;
+			case 3:
+				cout << "Ingrese el nuevo email: ";
+				cin >> dirNodoCliente->email;
+				break;
+			case 4:
+				cout << "Ingrese el nuevo Telefono: ";
+				cin >> dirNodoCliente->telefono;
+				break;
+		}
+		cout << "Desea modificar otro campo Si(1), No(0): ";
+		cin >> resp;
+	} while (resp == 1);
+}
+void EliminarCliente(Cliente *dirNodoCliente, Cliente *&pcabC, Cliente *&pfinC){
+	if (pcabC == pfinC){
+		pcabC = NULL;
+		pfinC = NULL;
+	}else if(pcabC == dirNodoCliente){
+		pcabC = pcabC->sgt;
+	}else if(pfinC == dirNodoCliente){
+		pfinC->sgt = NULL;
+		pfinC = dirNodoCliente->ant;
+	}else{
+		dirNodoCliente->ant->sgt = dirNodoCliente->sgt;
+		dirNodoCliente->sgt->ant = dirNodoCliente->ant;
+	}
+	delete dirNodoCliente;
+	cout << "Se ha eliminado con exito." << endl;
 }
