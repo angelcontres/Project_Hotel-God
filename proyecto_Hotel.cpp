@@ -2,8 +2,15 @@
 #include <string.h>
 #include <locale.h>
 #include <conio.h>
+#include <windows.h>
 
 using namespace std;
+void gotoxy(int x, int y){
+COORD coordinate;
+coordinate.X = x;
+coordinate.Y = y;
+SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coordinate);
+}
 
 struct Habitacion{
 	string numHabitacion;
@@ -23,19 +30,24 @@ struct Cliente{
 	Cliente *ant;
 };
 struct Reserva{
-	Habitacion datosHabitacion;
-	Cliente datosClientes;
+	Habitacion *datosHabitacion;
+	Cliente *datosClientes;
 	string fecha_in;
 	string fecha_out;
 	string temporada;
 	int n_dias;
 	float precioFinal;
+	string estado;
+	Reserva *sgt;
+	Reserva *ant;
 };
 struct Factura{
+	Reserva reserva;
 	Reserva totalDatos;
 	float gastosBar;
 	float valorTotal;
-	
+	Factura *sgt;
+	Factura *ant;
 };
 //Funciones de menus
 int menuHabitacion();
@@ -46,8 +58,8 @@ int menuReservas();
 //Funciones de operaciones
 void opcionesHabitacion(int op, Habitacion *&pcabHab, Habitacion *&pfinHab);
 void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC);
-void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC);
-void opcionesReservas(int op);
+void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC, Reserva *&pcabRes, Reserva *&pfinRes);
+void opcionesReservas(int op, Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, Cliente *&pfinC, Habitacion *&pcabHab, Habitacion *&pfinHab);
 void opcionesBar(int op);
 //Funciones de Habitaciones
 void registrarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab);
@@ -64,7 +76,7 @@ void ModificarCliente(Cliente *dirNodoCliente);
 void EliminarCliente(Cliente *dirNodoCliente, Cliente *&pcabC, Cliente *&pfinC);
 void listarClientes(Cliente *&pcabC, Cliente *&pfinC);
 //Funciones de Reservas
-
+void ReservarHabitacion(Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, Cliente *&pfinC, Habitacion *&pcabHab, Habitacion *&pfinHab);
 //Funciones de Bar
 
 //Funcion principal
@@ -73,9 +85,10 @@ int main(){
 	int op;
 	Cliente *pcabC = NULL, *pfinC = NULL;
 	Habitacion *pcabHab = NULL, *pfinHab = NULL;
+	Reserva *pcabRes =NULL , *pfinRes = NULL;
 	do {
 		op = menuPrincipal();
-		opcionesPrincipal(op, pcabHab, pfinHab, pcabC, pfinC);
+		opcionesPrincipal(op, pcabHab, pfinHab, pcabC, pfinC, pcabRes, pfinRes);
 	} while (op != 5);
 	
 	getch();
@@ -233,7 +246,7 @@ void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC){
 			break;
 	}
 }
-void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC){
+void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC, Reserva *&pcabRes, Reserva *&pfinRes){
 	int resp = 1;
 	switch(op){
 		case 1: 
@@ -255,7 +268,7 @@ void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Clien
 		case 3: 
 			do{
 				op = menuReservas();
-				opcionesReservas(op);
+				opcionesReservas(op, pcabRes, pfinRes, pcabC, pfinC, pcabHab, pfinHab);
 				cout << "Desea realizar otro proceso Si(1), No(0): ";
 				cin >> resp;				
 			} while (resp == 1);
@@ -273,10 +286,10 @@ void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Clien
 			break;
 	}
 }
-void opcionesReservas(int op){
+void opcionesReservas(int op, Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, Cliente *&pfinC, Habitacion *&pcabHab, Habitacion *&pfinHab){
 	switch(op){
-		case 1: 
-			// Reservar
+		case 1: // Reservar
+			ReservarHabitacion(pcabRes, pfinRes, pcabC, pfinC, pcabHab, pfinHab);
 			break;
 		case 2: 
 			// Buscar reserva
@@ -299,6 +312,7 @@ void opcionesBar(int op){
 			break;
 	}
 }
+//Funciones de Habitaciones
 void registrarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab){
 	int tipo;
 	Habitacion *nuevaHab = new Habitacion();
@@ -330,7 +344,6 @@ void registrarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab){
 		pfinHab = nuevaHab;
 	}
 }
-
 Habitacion *buscarHabitacion(string numHabitacion, Habitacion *pcabHab){
 	while(pcabHab != NULL){
 		if(pcabHab->numHabitacion == numHabitacion){
@@ -340,7 +353,6 @@ Habitacion *buscarHabitacion(string numHabitacion, Habitacion *pcabHab){
 	}
 	return NULL;
 }
-
 void modificarHabitacion(Habitacion *dirHabitacion){
 	int op, resp;
 	int tipo;
@@ -392,7 +404,6 @@ void modificarHabitacion(Habitacion *dirHabitacion){
 		cin >> resp;
 	}while (resp == 1);
 }
-
 void eliminarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab, Habitacion *&dirHabitacion){
 	if (pcabHab == pfinHab){
 		pcabHab = NULL;
@@ -414,8 +425,8 @@ void eliminarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab, Habitacion *
 		}
 	}
 }
-
 void listarHabitaciones (Habitacion *pcabHab){
+	
 	while (pcabHab != NULL){
 		cout << "Número de habitación: " << pcabHab->numHabitacion << endl;
 		cout << "Tipo de habitación: " << pcabHab->tipoHabitacion << endl;
@@ -428,6 +439,7 @@ void listarHabitaciones (Habitacion *pcabHab){
 		pcabHab = pcabHab->sgt;
 	}
 }
+//Funciones de clientes
 void InsertarCliente(Cliente *&pcabC, Cliente *&pfinC){
 	Cliente *nodoCliente =new Cliente();
 	fflush(stdin);
@@ -540,4 +552,37 @@ void listarClientes(Cliente *&pcabC, Cliente *&pfinC){
 			actual = actual->sgt;
 		}
 	}	
+}
+//Funciones de Reservas
+void ReservarHabitacion(Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, Cliente *&pfinC, Habitacion *&pcabHab, Habitacion *&pfinHab) {
+	system("cls");
+    Reserva *nodoReserva = new Reserva();
+    Cliente *dirNodoCliente;
+    Habitacion *dirNodoHabitacion;
+    string cedula, numeroH;
+
+    gotoxy(4, 1);	cout << "HOTEL TU DESCANSO";	
+    gotoxy(5, 3);   cout << "Cedula: ";				gotoxy(15,3) cin >> cedula;
+
+    dirNodoCliente = BuscarCliente(pcabC, cedula);
+    if (dirNodoCliente == NULL) {
+        InsertarCliente(pcabC, pfinC);
+        dirNodoCliente = BuscarCliente(pcabC, cedula); // Vuelve a buscar después de insertar
+    }
+    
+    cout << "Ingrese el numero de Habitacion: ";
+    cin >> numeroH;
+    dirNodoHabitacion = buscarHabitacion(numeroH, pcabHab);
+    
+    if (dirNodoHabitacion == NULL) {
+        cout << "La habitacion no existe :c " << endl;
+        delete nodoReserva; // Liberar memoria si no se utiliza
+        return; // Salir de la función si no hay habitación
+    }
+
+    nodoReserva->datosClientes = dirNodoCliente;
+    nodoReserva->datosHabitacion = dirNodoHabitacion;
+    
+    // Aquí puedes agregar la lógica para enlazar el nodoReserva a la lista de reservas
+    // (e.g., InsertarReserva(pcabRes, pfinRes, nodoReserva);)
 }
