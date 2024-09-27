@@ -37,11 +37,13 @@ struct Reserva{
 	string fecha_out;
 	string temporada;
 	int n_dias;
-	float precioFinal;
+	float subtotal;
+	float total;
 	string estado;
 	string numeroR;
 	Reserva *sgt;
 	Reserva *ant;
+	float iva=0.15;
 };
 struct Factura{
 	Reserva reserva;
@@ -564,10 +566,14 @@ void ReservarHabitacion(Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, C
     Cliente *dirNodoCliente;
     Habitacion *dirNodoHabitacion;
     string cedula, numeroH;
+    float incremento,subtotal, total;
 	
     gotoxy(4, 1);	cout << "HOTEL TU DESCANSO";	
 	gotoxy(4, 2); cout << "# Reserva: "; gotoxy(15, 2); cin >> nodoReserva->numeroR; 	
     gotoxy(5, 4);   cout << "Cedula: ";				gotoxy(15,4); cin >> cedula;
+    gotoxy(40, 2); cout<<"fecha de entrada: "; gotoxy(60, 2);cin>>nodoReserva->fecha_in;
+    gotoxy(90, 2); cout<<"fecha de salida: "; gotoxy(110, 2);cin>>nodoReserva->fecha_out;
+    
     
     dirNodoCliente = BuscarCliente(pcabC, cedula);
     if (dirNodoCliente == NULL) {
@@ -575,7 +581,7 @@ void ReservarHabitacion(Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, C
     }else{
     	RecuperarCliente(dirNodoCliente);
 	}
-    gotoxy(5,8); cout << "# Habitacion: ";  	gotoxy(20,8); cin >> numeroH;
+    gotoxy(40,4); cout << "# Habitacion: ";  	gotoxy(60,4); cin >> numeroH;
     dirNodoHabitacion = buscarHabitacion(numeroH, pcabHab);
     
     if (dirNodoHabitacion == NULL) {
@@ -585,9 +591,26 @@ void ReservarHabitacion(Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, C
     }else{
     	//RecuperarHabitacion(dirNodoHabitacion)
 	}
-
-    nodoReserva->datosClientes = dirNodoCliente;
+	nodoReserva->datosClientes = dirNodoCliente;
     nodoReserva->datosHabitacion = dirNodoHabitacion;
+	gotoxy(5,9);cout<<"Temporada: ";gotoxy(15,9);cin>>nodoReserva->temporada;
+	gotoxy(40,9);cout<<"# Días: ";gotoxy(60,9);cin>>nodoReserva->n_dias;
+	fflush(stdin);
+		if(nodoReserva->temporada=="Alta"){
+		incremento=0.15;
+	}else if(nodoReserva->temporada=="Media"){
+		incremento=0.1;
+	}else if(nodoReserva->temporada=="Baja"){
+		incremento=0;
+	}
+	subtotal=(nodoReserva->n_dias)*(nodoReserva->datosHabitacion->precioBase)*(incremento)+(nodoReserva->n_dias)*(nodoReserva->datosHabitacion->precioBase);
+	gotoxy(5,11); cout<<"Precio habitación: "<<nodoReserva->datosHabitacion->precioBase;
+	gotoxy(5,12);cout<<"Subtotal: "<<subtotal; nodoReserva->subtotal=subtotal;
+	gotoxy(5,13); cout <<"IVA: "<<nodoReserva->iva*100<<"%";
+	total= (nodoReserva->iva)*(subtotal)+subtotal;
+	gotoxy(5,14);cout<<"Total: "<<total;
+	
+    
     
     // Aquí puedes agregar la lógica para enlazar el nodoReserva a la lista de reservas
     // (e.g., InsertarReserva(pcabRes, pfinRes, nodoReserva);)
