@@ -46,9 +46,8 @@ struct Reserva{
 	float iva=0.15;
 };
 struct Factura{
-	Reserva totalDatos;
+	Reserva *reservacion;
 	float gastosBar;
-	float valorTotal;
 	Factura *sgt;
 	Factura *ant;
 };
@@ -61,9 +60,9 @@ int menuReservas();
 //Funciones de operaciones
 void opcionesHabitacion(int op, Habitacion *&pcabHab, Habitacion *&pfinHab);
 void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC);
-void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC, Reserva *&pcabRes, Reserva *&pfinRes);
-void opcionesReservas(int op, Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, Cliente *&pfinC, Habitacion *&pcabHab, Habitacion *&pfinHab);
-void opcionesBar(int op);
+void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC, Reserva *&pcabRes, Reserva *&pfinRes, Factura *&cabFac,Factura *&finFac);
+void opcionesReservas(int op, Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, Cliente *&pfinC, Habitacion *&pcabHab, Habitacion *&pfinHab,Factura *&cabFac,Factura *&finFac);
+void opcionesBar(int op,Factura *&cabFac,Reserva *&pcabRes);
 //Funciones de Habitaciones
 void registrarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab);
 Habitacion *buscarHabitacion(string numHabitacion, Habitacion *pcabHab);
@@ -86,6 +85,8 @@ void RecuperarHabitacion(Habitacion *dirNodoHabitacion);
 Reserva *BuscarReserva(Reserva *&pcabRes, string numeroR);
 void PresentarReserva(Reserva *dirNodoReserva);
 Reserva *Fun_BuscarReserva(Reserva *&pcabRes, string cedula);
+void finalizarReserva(Reserva *&dirNodoReserva,Factura *&cabFac,Factura *&finFac);
+void IngresarConsumoBar(Reserva *&pcabRes, Factura *&cabFac);
 //Funciones de Bar
 
 //Funcion principal
@@ -95,9 +96,10 @@ int main(){
 	Cliente *pcabC = NULL, *pfinC = NULL;
 	Habitacion *pcabHab = NULL, *pfinHab = NULL;
 	Reserva *pcabRes =NULL , *pfinRes = NULL;
+	Factura *cabFac=NULL, *finFac=NULL;
 	do {
 		op = menuPrincipal();
-		opcionesPrincipal(op, pcabHab, pfinHab, pcabC, pfinC, pcabRes, pfinRes);
+		opcionesPrincipal(op, pcabHab, pfinHab, pcabC, pfinC, pcabRes, pfinRes,cabFac,finFac);
 	} while (op != 5);
 	
 	getch();
@@ -139,7 +141,7 @@ int menuReservas(){
 		system("cls");
 		cout << "***** MENU DE RESERVAS *****" << endl;
 		cout << " 1: Reservar" << endl;
-		cout << " 2: Buscar reserva" << endl;
+		cout << " 2: Comprobar reserva" << endl;
 		cout << " 3: Finalizar reserva y entregar factura" << endl;
 		cout << " 4: Volver al menú principal" << endl;
 		cout << "Elija la opción: ";
@@ -255,7 +257,7 @@ void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC){
 			break;
 	}
 }
-void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC, Reserva *&pcabRes, Reserva *&pfinRes){
+void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC, Reserva *&pcabRes, Reserva *&pfinRes,Factura *&cabFac,Factura *&finFac){
 	int resp = 1;
 	switch(op){
 		case 1: 
@@ -277,7 +279,7 @@ void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Clien
 		case 3: 
 			do{
 				op = menuReservas();
-				opcionesReservas(op, pcabRes, pfinRes, pcabC, pfinC, pcabHab, pfinHab);
+				opcionesReservas(op, pcabRes, pfinRes, pcabC, pfinC, pcabHab, pfinHab,cabFac,finFac);
 				cout << "\nDesea realizar otro proceso Si(1), No(0): ";
 				cin >> resp;				
 			} while (resp == 1);
@@ -285,7 +287,7 @@ void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Clien
 		case 4: 
 			do{
 				op = menuBar();
-				opcionesBar(op);
+				opcionesBar(op,cabFac,pcabRes);
 				cout << "\nDesea realizar otro proceso Si(1), No(0)";
 				cin >> resp;
 			} while (resp == 1);
@@ -295,7 +297,7 @@ void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Clien
 			break;
 	}
 }
-void opcionesReservas(int op, Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, Cliente *&pfinC, Habitacion *&pcabHab, Habitacion *&pfinHab){
+void opcionesReservas(int op, Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, Cliente *&pfinC, Habitacion *&pcabHab, Habitacion *&pfinHab,Factura *&cabFac,Factura *&finFac){
 	string numeroR, cedula;
 	Cliente *dirNodoCliente;
 	Reserva *dirNodoReserva;
@@ -323,7 +325,28 @@ void opcionesReservas(int op, Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pc
 				}
 			}
 			break;
-		case 3: // Finalizar reserva y entregar factura
+		case 3: 
+				//buscar reserva
+				cout << "Ingrese la cedula del cliente: ";
+			cin >> cedula;
+			dirNodoCliente = BuscarCliente(pcabC, cedula);
+			if(dirNodoCliente == NULL){
+				cout << "El cliente no existe" << endl;
+			}else{			
+				dirNodoReserva = Fun_BuscarReserva(pcabRes, cedula);
+				if (dirNodoReserva == NULL){
+					cout << "No existe la reserva" << endl;
+				}else{
+					if (dirNodoReserva->estado == 1){
+							finalizarReserva(dirNodoReserva,finFac,cabFac);
+					}else{
+						cout <<  "La reserva no esta activa" << endl;
+					}
+				}
+			}
+			break;
+				//cambiar estado(ativo/inactivo)
+				//presentar factura incluido lo del bar
 			
 			break;
 		case 4: 
@@ -331,10 +354,10 @@ void opcionesReservas(int op, Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pc
 			break;
 	}
 }
-void opcionesBar(int op){
+void opcionesBar(int op,Factura *&cabFac,Reserva *&pcabRes){
 	switch(op){
 		case 1: 
-			// Ingresar consumo a cliente
+			IngresarConsumoBar(pcabRes, cabFac);
 			break;
 		case 2: 
 			// Volver al menú principal
@@ -634,6 +657,7 @@ void ReservarHabitacion(Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, C
 		incremento=0;
 	}
 	subtotal=(nodoReserva->n_dias)*(nodoReserva->datosHabitacion->precioBase)*(incremento)+(nodoReserva->n_dias)*(nodoReserva->datosHabitacion->precioBase);
+	gotoxy(5,11); 	cout << "consumo de bar: "; gotoxy(20,11); cout << " 0";
 	gotoxy(5,12);cout<<"Subtotal: "<<subtotal; nodoReserva->subtotal=subtotal;
 	gotoxy(5,13); cout <<"IVA "<<nodoReserva->iva*100<<"%: " << subtotal*(nodoReserva->iva);
 	total= (nodoReserva->iva)*(subtotal)+subtotal;
@@ -716,10 +740,13 @@ void PresentarReserva(Reserva *dirNodoReserva){
 	gotoxy(40, 8); 	cout << "Precio";	 gotoxy(60, 8); cout << dirNodoReserva->datosHabitacion->precioBase;
 	gotoxy(5,9);	cout<<"Temporada: ";	 gotoxy(15,9);	cout << dirNodoReserva->temporada;
 	gotoxy(40,9);	cout<<"# Días: ";		 gotoxy(60,9);  cout << dirNodoReserva->n_dias;
-	gotoxy(5,11); 	cout << "consumo de bar"; gotoxy(15,11); cout << " 0";
+	gotoxy(5,11); 	cout << "consumo de bar: "; gotoxy(20,11); cout << " 0";
 	gotoxy(5,12);	cout<<"Subtotal: "; 	 gotoxy(15,12); cout <<dirNodoReserva->subtotal;
 	gotoxy(5,13); 	cout <<"IVA " << dirNodoReserva->iva*100<<"%: ";		gotoxy(15,13); cout << dirNodoReserva->subtotal*(dirNodoReserva->iva);
 	gotoxy(5,14);	cout<<"Total: "<<dirNodoReserva->total;
+	cout<<"presione una tecla para continuar...";
+	getch();
+	system("cls");
 }
 Reserva *Fun_BuscarReserva(Reserva *&pcabRes, string cedula){
 	Reserva *actualRes = pcabRes;
@@ -730,4 +757,58 @@ Reserva *Fun_BuscarReserva(Reserva *&pcabRes, string cedula){
 		actualRes = actualRes->sgt;
 	} 
 	return NULL;
+}
+void finalizarReserva(Reserva *&dirNodo,Factura *&cabFac,Factura *&finFac){
+	float subtotal,total;
+	
+	dirNodo->estado=0;
+	dirNodo->datosHabitacion->estado=0;
+	PresentarReserva(dirNodo);
+	Factura *nuevaFac=new Factura();
+	nuevaFac->reservacion=dirNodo;
+	subtotal=nuevaFac->reservacion->total;
+	total=subtotal+nuevaFac->gastosBar;
+	gotoxy(5,15);cout<<"Gastos de bar: "<<nuevaFac->gastosBar;
+	gotoxy(5,16);cout<<"Total a pagar: "<<nuevaFac->gastosBar+total;
+	if(cabFac == NULL){
+		cabFac = nuevaFac;
+		finFac = nuevaFac;
+	}else{
+		finFac->sgt = nuevaFac;
+		nuevaFac->ant = finFac;
+		finFac = nuevaFac;
+	}
+	
+}
+void IngresarConsumoBar(Reserva *&pcabRes, Factura *&cabFac){
+	string cedulabuscar;
+	float consumoBar;
+	int reservaEncontrada =0;
+	Factura *actual = cabFac;
+	Reserva *fac =pcabRes	
+	cout << "Ingrese el numero de cedula del cliente: ";
+	cin >> cedulabuscar;
+
+	
+
+
+	while(actual != NULL){
+		if (fac->datosReserva->datosClientes->cedula == cedulabuscar){
+			reservaEncontrada = 1;
+			break;
+		}
+		actual = actual->sgt;
+	}
+
+	// Si la reserva no fue encontrada
+	if (reservaEncontrada==0){
+		cout << "No se encontró una reserva para el cliente con esa cédula." << endl;
+		return;
+	}
+
+	// Si la reserva fue encontrada, ingresar el consumo del bar
+	cout << "Ingrese el valor del consumo en el bar: ";
+	cin >> consumoBar;
+	actual->gastosBar;
+	cout << "Consumo del bar añadido con éxito." << endl;
 }
