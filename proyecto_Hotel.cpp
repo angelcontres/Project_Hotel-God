@@ -55,6 +55,7 @@ Cliente *BuscarCliente(Cliente *&pcabC, string cedulabuscar);
 void PresentarCliente(Cliente *dirNodoCliente);
 void ModificarCliente(Cliente *dirNodoCliente);
 void EliminarCliente(Cliente *dirNodoCliente, Cliente *&pcabC, Cliente *&pfinC);
+void listarClientes(Cliente *&pcabC, Cliente *&pfinC);
 //Funciones de Reservas
 
 //Funciones de Bar
@@ -188,8 +189,8 @@ void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC){
 				EliminarCliente(dirNodoCliente, pcabC, pfinC);
 			}
 			break;
-		case 4: 
-			// Listar clientes
+		case 4: // Listar clientes
+			listarClientes(pcabC, pfinC);
 			break;
 		case 5: 
 			// Volver al menú principal
@@ -275,13 +276,13 @@ void InsertarCliente(Cliente *&pcabC, Cliente *&pfinC){
 	cout << "Ingrese el telefono del cliente: ";
 	cin >> nodoCliente->telefono;
 	nodoCliente->sgt = NULL;
-	nodoCliente->ant = pfinC;
+	nodoCliente->ant = NULL;
 	
 	if(pcabC == NULL){
 		pcabC = nodoCliente;
 		pfinC = nodoCliente;
 	}else{
-		pfinC->sgt = nodoCliente->sgt;
+		pfinC->sgt = nodoCliente;
 		nodoCliente->ant = pfinC;
 		pfinC = nodoCliente;
 	}
@@ -338,18 +339,41 @@ void ModificarCliente(Cliente *dirNodoCliente){
 	} while (resp == 1);
 }
 void EliminarCliente(Cliente *dirNodoCliente, Cliente *&pcabC, Cliente *&pfinC){
-	if (pcabC == pfinC){
+	if(pcabC == pfinC){
 		pcabC = NULL;
 		pfinC = NULL;
-	}else if(pcabC == dirNodoCliente){
-		pcabC = pcabC->sgt;
-	}else if(pfinC == dirNodoCliente){
-		pfinC->sgt = NULL;
-		pfinC = dirNodoCliente->ant;
+		delete(dirNodoCliente);
 	}else{
-		dirNodoCliente->ant->sgt = dirNodoCliente->sgt;
-		dirNodoCliente->sgt->ant = dirNodoCliente->ant;
+		if(pcabC == dirNodoCliente){//caso 1: Eliminar el primer nodo
+		    pcabC=dirNodoCliente->sgt;
+			pcabC->ant=NULL;
+			delete(dirNodoCliente);
+		}else{
+			 if(dirNodoCliente->sgt!=NULL){//caso 2: eliminar en la mitad
+			 	dirNodoCliente->ant->sgt = dirNodoCliente->sgt;
+			 	dirNodoCliente->sgt->ant=dirNodoCliente->ant;
+			 	delete(dirNodoCliente);
+			}else{//caso 3: al final de la lista
+				pfinC=dirNodoCliente->ant;
+				pfinC->sgt=NULL;
+				delete(dirNodoCliente);
+			}
+		}
 	}
-	delete dirNodoCliente;
 	cout << "Se ha eliminado con exito." << endl;
+}
+void listarClientes(Cliente *&pcabC, Cliente *&pfinC){
+	Cliente *actual = pcabC;
+	if (pcabC == NULL) {
+        cout<<"La lista está vacía."<<endl;
+    }else{
+    	cout<<"Lista de clientes:"<<endl;
+		while(actual!=NULL){
+			cout<<"Nombre: " << actual->nombres<<endl;
+			cout<<"Cédula: " << actual->cedula<<endl;
+			cout<<"Telefono: " << actual->telefono<<endl;
+			cout<<"Mail: " << actual->email<<endl<<endl;
+			actual = actual->sgt;
+		}
+	}	
 }
