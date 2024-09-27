@@ -6,11 +6,13 @@
 using namespace std;
 
 struct Habitacion{
-	int numHabitacion;
-	int tipoHabitacion;
+	string numHabitacion;
+	string tipoHabitacion;
 	float precioBase;
 	int vistaAlMar;
 	int numCamas;
+	Habitacion *sgt;
+	Habitacion *ant;
 };
 struct Cliente{
 	string nombres;
@@ -42,12 +44,17 @@ int menuCliente();
 int menuPrincipal();
 int menuReservas();
 //Funciones de operaciones
-void opcionesHabitacion(int op);
+void opcionesHabitacion(int op, Habitacion *&pcabHab, Habitacion *&pfinHab);
 void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC);
-void opcionesPrincipal(int op, Cliente  *&pcabC, Cliente *&pfinC);
+void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC);
 void opcionesReservas(int op);
 void opcionesBar(int op);
 //Funciones de Habitaciones
+void registrarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab);
+Habitacion *buscarHabitacion(string numHabitacion, Habitacion *pcabHab);
+void modificarHabitacion(Habitacion *dirHabitacion);
+void eliminarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab, Habitacion *&dirHabitacion);
+void listarHabitaciones (Habitacion *pcabHab);
 
 //Funciones de Clientes
 void InsertarCliente(Cliente *&pcabC, Cliente *&pfinC);
@@ -59,13 +66,16 @@ void listarClientes(Cliente *&pcabC, Cliente *&pfinC);
 //Funciones de Reservas
 
 //Funciones de Bar
+
+//Funcion principal
 int main(){
 	setlocale(LC_CTYPE, "Spanish");
 	int op;
 	Cliente *pcabC = NULL, *pfinC = NULL;
+	Habitacion *pcabHab = NULL, *pfinHab = NULL;
 	do {
 		op = menuPrincipal();
-		opcionesPrincipal(op, pcabC, pfinC);
+		opcionesPrincipal(op, pcabHab, pfinHab, pcabC, pfinC);
 	} while (op != 5);
 	
 	getch();
@@ -118,7 +128,7 @@ int menuReservas(){
 int menuHabitacion(){
 	int op;
 	do {
-		system("cls");
+		system ("cls");
 		cout << "***** MENU DE HABITACIONES *****" << endl;
 		cout << " 1: Insertar habitación" << endl;
 		cout << " 2: Modificar habitación" << endl;
@@ -127,7 +137,7 @@ int menuHabitacion(){
 		cout << " 5: Volver al menú principal" << endl;
 		cout << "Elija la opción: ";
 		cin >> op;
-	} while (op < 1 || op > 5); // Verificación de opción válida
+	} while (op < 1 || op > 5);
 	return op;
 }
 int menuBar(){
@@ -143,24 +153,50 @@ int menuBar(){
 	return op;
 }
 
-void opcionesHabitacion(int op){
+void opcionesHabitacion(int op, Habitacion *&pcabHab, Habitacion *&pfinHab){
+	Habitacion *dirHabitacion;
+	string numHabitacion;
 	switch(op){
 		case 1: 
 			// Insertar habitación
+			registrarHabitacion(pcabHab, pfinHab);
 			break;
 		case 2: 
 			// Modificar habitación
+			cout << "Ingrese el número de habitación a MODIFICAR: ";
+			cin >> numHabitacion;
+			dirHabitacion = buscarHabitacion(numHabitacion, pcabHab);
+			if(dirHabitacion == NULL){
+				cout << "Aún no ha registrado habitaciones..." << endl;
+			} else {
+				modificarHabitacion(dirHabitacion);
+			}
 			break;
 		case 3: 
 			// Eliminar habitación
+			cout << "Ingrese el número de habitación a ELIMINAR: ";
+			cin >> numHabitacion;
+			dirHabitacion = buscarHabitacion(numHabitacion, pcabHab);
+			if(dirHabitacion == NULL){
+				cout << "Aún no ha registrado habitaciones..." << endl;
+			} else {
+				eliminarHabitacion(pcabHab, pfinHab, dirHabitacion);
+			}
 			break;
 		case 4: 
 			// Listar habitaciones
+			if(pcabHab == NULL){
+				cout << "Aún no se ha registrado habitaciones..." << endl;
+			} else {
+				listarHabitaciones (pcabHab);
+			}
 			break;
 		case 5: 
 			// Volver al menú principal
+			cout << "Volviendo..." << endl;
 			break;
 	}
+	getch();
 }
 void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC){
 	Cliente *dirNodoCliente;
@@ -197,13 +233,13 @@ void opcionesCliente(int op, Cliente *&pcabC, Cliente *&pfinC){
 			break;
 	}
 }
-void opcionesPrincipal(int op, Cliente  *&pcabC, Cliente *&pfinC){
+void opcionesPrincipal(int op, Habitacion *&pcabHab, Habitacion *&pfinHab, Cliente  *&pcabC, Cliente *&pfinC){
 	int resp = 1;
 	switch(op){
 		case 1: 
 			do {
 				op = menuHabitacion();
-				opcionesHabitacion(op);
+				opcionesHabitacion(op, pcabHab, pfinHab);
 				cout << "Dese Realizar otro proceso SI(1), No(0): ";
 				cin >> resp;
 			} while (resp == 1);
@@ -263,7 +299,135 @@ void opcionesBar(int op){
 			break;
 	}
 }
+void registrarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab){
+	int tipo;
+	Habitacion *nuevaHab = new Habitacion();
+	cout << "Ingrese el número de habitación: ";
+	cin >> nuevaHab->numHabitacion;
+	cout << "Ingrese el tipo de habitación. Sencilla (1), Matrimonial (2), Múltiple (3): ";
+	cin >> tipo;
+	switch(tipo){
+		case 1: nuevaHab->tipoHabitacion = "Sencilla"; break;
+		case 2: nuevaHab->tipoHabitacion = "Matrimonial"; break;
+		case 3: nuevaHab->tipoHabitacion = "Múltiple"; break;
+	}
+	if (tipo == 3){
+		cout << "Cantidad de camas: ";
+		cin >> nuevaHab->numCamas;
+	}
+	cout << "Ingrese el precio base: ";
+	cin >> nuevaHab->precioBase;
+	cout << "¿Su habitación tiene vista al mar? Si (1), No (0): ";
+	cin >> nuevaHab->vistaAlMar;
+	nuevaHab->sgt = NULL;
+	
+	if (pcabHab == NULL){
+		pcabHab = nuevaHab;
+		pfinHab = nuevaHab;
+	} else {
+		pcabHab->sgt = nuevaHab;
+		nuevaHab->ant = pcabHab;
+		pfinHab = nuevaHab;
+	}
+}
 
+Habitacion *buscarHabitacion(string numHabitacion, Habitacion *pcabHab){
+	while(pcabHab != NULL){
+		if(pcabHab->numHabitacion == numHabitacion){
+			return pcabHab;
+		}
+		pcabHab = pcabHab->sgt;
+	}
+	return NULL;
+}
+
+void modificarHabitacion(Habitacion *dirHabitacion){
+	int op, resp;
+	int tipo;
+	
+	do{
+		system("cls");
+		cout << "\n 1: Numero de habitación" << endl;
+		cout << " 2: Tipo de habitación " << endl;
+		cout << " 3: Precio base" << endl;
+		cout << " 4: Vista al mar" << endl;
+		cout << " 5: SALIR" << endl;
+		cout << "Elija el campo que desea MODIFICAR: ";
+		cin >> op;
+		
+		switch (op){
+			case 1:
+				cout << "Actualice el número de habitación: ";
+				cin >> dirHabitacion->numHabitacion;
+				break;
+			case 2:
+				cout << "Actualice el tipo de habitación. Sencilla (1), Matrimonial (2), Múltiple (3): ";
+				cin >> tipo;
+				switch(tipo){
+					case 1: dirHabitacion->tipoHabitacion = "Sencilla"; break;
+					case 2: dirHabitacion->tipoHabitacion = "Matrimonial"; break;
+					case 3: dirHabitacion->tipoHabitacion = "Múltiple"; break;
+				}
+				if(tipo == 3){
+					cout << "Cantidad de camas: ";
+					cin >> dirHabitacion->numCamas;
+				}
+				break;
+			case 3:
+				cout << "Actualice el precio base: ";
+				cin >> dirHabitacion->precioBase;
+				break;
+			case 4:
+				cout << "Actualice si tiene vista al mar: ";
+				cin >> dirHabitacion->vistaAlMar;
+				(dirHabitacion->vistaAlMar == 1 ? "Sí" : "No");
+				break;
+			case 5:
+				cout << "¿Está seguro? Si (1), No (0)";
+				cin >> resp;
+				cout << "Saliendo...";
+				break;
+		}
+		cout << "¿Desea modificar otro campo? Si (1), No (0): ";
+		cin >> resp;
+	}while (resp == 1);
+}
+
+void eliminarHabitacion(Habitacion *&pcabHab, Habitacion *&pfinHab, Habitacion *&dirHabitacion){
+	if (pcabHab == pfinHab){
+		pcabHab = NULL;
+		pfinHab = NULL;
+		delete (dirHabitacion);
+	} else {
+		if(pcabHab == dirHabitacion){
+			pcabHab = dirHabitacion->sgt;
+			pcabHab->ant = NULL;
+			delete(dirHabitacion);
+		}else if(dirHabitacion->sgt != NULL){
+			dirHabitacion->ant->sgt = dirHabitacion->sgt;
+			dirHabitacion->sgt->ant = dirHabitacion->ant;
+			delete(dirHabitacion);
+		}else{
+			pfinHab = dirHabitacion->ant;
+			pfinHab->sgt = NULL;
+			delete(dirHabitacion);
+		}
+	}
+}
+
+void listarHabitaciones (Habitacion *pcabHab){
+	while (pcabHab != NULL){
+		cout << "Número de habitación: " << pcabHab->numHabitacion << endl;
+		cout << "Tipo de habitación: " << pcabHab->tipoHabitacion << endl;
+		if (pcabHab->tipoHabitacion == "Múltiple"){
+			cout << "**Cantidad de camas: " << pcabHab->numCamas << endl;
+		}
+		cout << "Precio base: " << pcabHab->precioBase << endl;
+		cout << "Vista al mar: " << (pcabHab->vistaAlMar == 1 ? "Sí" : "No") << endl;
+		
+		pcabHab = pcabHab->sgt;
+	}
+}
 void InsertarCliente(Cliente *&pcabC, Cliente *&pfinC){
 	Cliente *nodoCliente =new Cliente();
 	fflush(stdin);
