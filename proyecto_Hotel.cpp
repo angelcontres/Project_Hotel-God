@@ -18,6 +18,7 @@ struct Habitacion{
 	float precioBase;
 	int vistaAlMar;
 	int numCamas;
+	int estado = 0;
 	Habitacion *sgt;
 	Habitacion *ant;
 };
@@ -38,6 +39,7 @@ struct Reserva{
 	int n_dias;
 	float precioFinal;
 	string estado;
+	string numeroR;
 	Reserva *sgt;
 	Reserva *ant;
 };
@@ -77,6 +79,8 @@ void EliminarCliente(Cliente *dirNodoCliente, Cliente *&pcabC, Cliente *&pfinC);
 void listarClientes(Cliente *&pcabC, Cliente *&pfinC);
 //Funciones de Reservas
 void ReservarHabitacion(Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, Cliente *&pfinC, Habitacion *&pcabHab, Habitacion *&pfinHab);
+Cliente *Fun_InsertarCliente(Cliente *&pcabC, Cliente *&pfinC, string cedula);
+void RecuperarCliente(Cliente *dirNodoCliente);
 //Funciones de Bar
 
 //Funcion principal
@@ -560,29 +564,55 @@ void ReservarHabitacion(Reserva *&pcabRes, Reserva *&pfinRes, Cliente *&pcabC, C
     Cliente *dirNodoCliente;
     Habitacion *dirNodoHabitacion;
     string cedula, numeroH;
-
+	
     gotoxy(4, 1);	cout << "HOTEL TU DESCANSO";	
-    gotoxy(5, 3);   cout << "Cedula: ";				gotoxy(15,3) cin >> cedula;
-
+	gotoxy(4, 2); cout << "# Reserva: "; gotoxy(15, 2); cin >> nodoReserva->numeroR; 	
+    gotoxy(5, 4);   cout << "Cedula: ";				gotoxy(15,4); cin >> cedula;
+    
     dirNodoCliente = BuscarCliente(pcabC, cedula);
     if (dirNodoCliente == NULL) {
-        InsertarCliente(pcabC, pfinC);
-        dirNodoCliente = BuscarCliente(pcabC, cedula); // Vuelve a buscar después de insertar
-    }
-    
-    cout << "Ingrese el numero de Habitacion: ";
-    cin >> numeroH;
+        dirNodoCliente = Fun_InsertarCliente(pcabC, pfinC, cedula);
+    }else{
+    	RecuperarCliente(dirNodoCliente);
+	}
+    gotoxy(5,8); cout << "# Habitacion: ";  	gotoxy(20,8); cin >> numeroH;
     dirNodoHabitacion = buscarHabitacion(numeroH, pcabHab);
     
     if (dirNodoHabitacion == NULL) {
-        cout << "La habitacion no existe :c " << endl;
-        delete nodoReserva; // Liberar memoria si no se utiliza
-        return; // Salir de la función si no hay habitación
-    }
+        
+		delete nodoReserva;
+        return;
+    }else{
+    	//RecuperarHabitacion(dirNodoHabitacion)
+	}
 
     nodoReserva->datosClientes = dirNodoCliente;
     nodoReserva->datosHabitacion = dirNodoHabitacion;
     
     // Aquí puedes agregar la lógica para enlazar el nodoReserva a la lista de reservas
     // (e.g., InsertarReserva(pcabRes, pfinRes, nodoReserva);)
+}
+Cliente *Fun_InsertarCliente(Cliente *&pcabC, Cliente *&pfinC, string cedula){
+	Cliente *nodoCliente = new Cliente();
+	nodoCliente->cedula = cedula;
+	fflush(stdin);
+	gotoxy(5,5); cout << "Nombres: ";		gotoxy(15, 5); getline(cin, nodoCliente->nombres);
+	gotoxy(5,6); cout << "Telefono: ";		gotoxy(15, 6); cin >> nodoCliente->telefono;
+	gotoxy(5,7); cout << "Email: ";			gotoxy(15, 7); cin >> nodoCliente->email;
+	nodoCliente->sgt = NULL;
+	nodoCliente->ant = NULL;
+	
+	if(pcabC == NULL){
+		pcabC = nodoCliente;
+		pfinC = nodoCliente;
+	}else{
+		pfinC->sgt = nodoCliente;
+		nodoCliente->ant = pfinC;
+		pfinC = nodoCliente;
+	}
+}
+void RecuperarCliente(Cliente *dirNodoCliente){
+	gotoxy(5,5); cout << "Nombres: ";		gotoxy(15, 5); cout << dirNodoCliente->nombres;
+	gotoxy(5,6); cout << "Telefono: ";		gotoxy(15, 6); cin >> dirNodoCliente->telefono;
+	gotoxy(5,7); cout << "Email: ";			gotoxy(15, 7); cin >> dirNodoCliente->email;
 }
